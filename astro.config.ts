@@ -15,7 +15,7 @@ import remarkMath from 'remark-math'
 
 import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
-import type { ExpressiveCodeTheme } from 'rehype-expressive-code'
+// import type { ExpressiveCodeTheme } from 'rehype-expressive-code'
 
 import tailwindcss from '@tailwindcss/vite'
 
