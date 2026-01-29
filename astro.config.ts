@@ -50,7 +50,7 @@ export default defineConfig({
           themes: ['vesper'],
           plugins: [pluginCollapsibleSections(), pluginLineNumbers()],
           useDarkModeMediaQuery: false,
-          themeCssSelector: (theme: ExpressiveCodeTheme) =>
+          themeCssSelector: () =>
             `[data-theme="dark"]`,
           defaultProps: {
             wrap: true,
