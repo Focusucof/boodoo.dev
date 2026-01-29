@@ -21,7 +21,7 @@ const authors = defineCollection({
   schema: z.object({
     name: z.string(),
     pronouns: z.string().optional(),
-    avatar: z.string().url().or(z.string().startsWith('/')),
+    avatar: z.string().url().or(z.string().startsWith('/')).optional(),
     bio: z.string().optional(),
     mail: z.string().email().optional(),
     website: z.string().url().optional(),
@@ -41,8 +41,8 @@ const projects = defineCollection({
       tags: z.array(z.string()),
       image: image(),
       link: z.string().url(),
-      startDate: z.coerce.date().optional(),
-      endDate: z.coerce.date().optional(),
+      startDate: z.string().optional(),
+      endDate: z.string().optional(),
     }),
 })
 
