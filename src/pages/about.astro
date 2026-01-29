@@ -1,0 +1,42 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import ProjectCard from '@/components/ProjectCard.astro'
+import Layout from '@/layouts/Layout.astro'
+import { getAllProjects } from '@/lib/data-utils'
+
+const projects = await getAllProjects()
+---
+
+<Layout class="max-w-3xl font-sans">
+  <PageHead slot="head" title="About" />
+  <div class="mt-12">
+  <Breadcrumbs items={[{ label: 'About', icon: 'lucide:info' }]} />
+  </div>
+
+  <section class ="mt-8">
+    <div class="min-w-full">
+      <div class="prose prose-neutral dark:prose-invert mb-8">
+        <h1 class="text-3xl font-bold mb-4">About Me</h1>
+        <p class="mt-0 text-lg">
+          Hey, I’m Devin. I’m a Computer Science student based in Toronto, Canada. I like working close to the system and spend a lot of my time 
+          building and experimenting with software, networks, and security. I’m especially interested in how things work under the hood, and what 
+          happens when they don’t.
+        </p>
+        <p>
+         Most of my learning happens outside the classroom. I build projects, break them, fix them, and repeat. That’s how I’ve gotten into networking, 
+         security, and full-stack development, and why I care more about understanding systems than just using tools.
+        </p>
+        <p>
+          When I’m not coding, I’m usually hacking something, working on personal projects, or reading research papers about computers.
+        </p>
+      </div>
+
+      <!-- <h2 class="mb-4 text-2xl font-medium">Projects</h2>
+      <div class="flex flex-col gap-4">
+        {projects.map((project) => <ProjectCard project={project} />)}
+      </div> -->
+    </div>
+  </section>
+</Layout>

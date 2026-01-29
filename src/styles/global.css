@@ -1,0 +1,103 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme inline {
+  --font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-additive: var(--additive);
+  --color-additive-foreground: var(--additive-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  
+  --font-handwriting: 'Caveat', 'Brush Script MT', cursive;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono[wght].woff2') format('woff2-variations');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Italic[wght].woff2') format('woff2-variations');
+  font-weight: 100 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --background: #101010;
+  --foreground: #eee;
+  --primary: oklch(0.8775 0.0458 75);
+  --primary-foreground: oklch(0.209 0.006 75);
+  --muted: oklch(0.209 0.006 75);
+  --muted-foreground: #aaa;
+  --destructive: #FF8080;
+  --border: oklch(0.3074 0.0087 75);
+  --ring: oklch(0.4856 0.0171 75);
+
+  /* --background: #0b0f12;
+  --foreground: #e6eef6;
+  --primary: #0ea5ff;
+  --primary-foreground: #041226;
+  --muted: #0f1315;
+  --muted-foreground: #94a3b8;
+  --destructive: #ff6b6b;
+  --destructive-foreground: #0b0f12;
+  --border: rgba(255,255,255,0.06);
+  --ring: rgba(14,165,255,0.18); */
+
+  --chart-1: 34 54% 81%;
+  --chart-2: 34 34% 73%;
+  --chart-3: 35 22% 65%;
+  --chart-4: 35 16% 57%;
+  --chart-5: 35 12% 41%;
+  --chart-6: 33 12% 33%;
+  --chart-7: 32 12% 25%;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    @apply border-border outline-ring/50 tracking-tight;
+  }
+}
+
+.bg-grid-pattern {
+  position: relative;
+}
+
+.bg-grid-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, var(--color-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
+  mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: -1;
+}

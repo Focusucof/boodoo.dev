@@ -1,0 +1,317 @@
+---
+import BlogCard from '@/components/BlogCard.astro'
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import { Badge } from '@/components/ui/badge'
+import { buttonVariants } from '@/components/ui/button'
+import { SITE } from '@/consts'
+import Layout from '@/layouts/Layout.astro'
+import { getAllProjects, getRecentPosts } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
+import { Image } from 'astro:assets'
+import ProjectCard from '@/components/ProjectCard.astro'
+
+const blog = await getRecentPosts(SITE.featuredPostCount)
+const projects = await getAllProjects()
+
+const experience = [
+  {
+    role: 'Technical IT Assistant',
+    company: 'Ontario Public Services (MPBSDP)',
+    startDate: 'May 2025',
+    endDate: 'Aug 2025',
+    location: 'Toronto, Canada',
+    description: ["Engineered internal business applications (scheduling and payroll) utilizing Azure Entra ID for secure authentication.",
+                  "Modernized legacy C# applications by refactoring code to meet current security and compliance standards.",
+                  "Managed and executed pre-production testing cycles, identifying and resolving critical defects for a seamless release.", 
+                  "Designed and implemented frontend modifications to ensure AODA compliance, enhancing accessibility for all users."],
+    tech: ['C#', 'Azure', 'React', 'Testing', 'Microsoft Teams', 'Outlook'],
+    logo: 'lucide:building', 
+  },
+  {
+    role: 'Classroom Facilitator',
+    company: 'CodeNinjas',
+    startDate: 'Apr 2023',
+    endDate: 'May 2025',
+    location: 'Ajax, Canada',
+    description: [
+      'Facilitated training sessions on programming and software design.',
+      'Coordinated annual course programs by overseeing scheduling, communications, and finances.',
+      'Curated a dynamic and engaging program curriculum, specialized in robotics, hardware design, and AI.',
+      'Maintain updates on Microsoft Sharepoint including managing permissions and updating company documents.'
+    ],
+    tech: ['JavaScript', 'Python', 'Robotics', 'Unity', 'Roblox', 'Lua', 'C#', 'Teaching'],
+    logo: 'lucide:sword', // Placeholder icon
+  },
+  {
+    role: "Audio Technician & DJ",
+    company: 'DEVN Music',
+    startDate: 'May 2023',
+    endDate: null,
+    location: 'Toronto, Canada',
+    description: [
+      "Assemble and optimize audio systems, configuring amplifiers, speakers, and equipment for optimal sound quality during live performances.",
+      "Proficiently manage Instagram and TikTok accounts, consistently posting content to drive community engagement."
+    ],
+    tech: ['Audio Engineering', 'Mixing', 'Sound Design', 'Social Media'],
+    logo: 'lucide:audio-lines', // Placeholder icon
+  }
+]
+---
+
+<Layout class="max-w-3xl font-sans">
+  <PageHead slot="head" title="Home" />
+
+  <!-- Hero Section -->
+  <section class="bg-grid-pattern relative -mx-4 sm:-mx-8 p-4 sm:p-8 mb-12">
+    <div
+      class="flex flex-col items-center gap-6 md:flex-row md:items-start md:justify-between"
+    >
+      <div class="flex flex-col items-center md:items-start gap-y-2">
+        <h1
+          class="text-6xl font-extrabold tracking-tight leading-none sm:text-7xl md:text-8xl text-center md:text-left"
+        >
+          DEVIN<br /><span class="text-primary">BOODOO.</span>
+        </h1>
+        <p class="text-xl text-foreground font-serif italic">
+          Developer <span class="text-xs align-middle">✦</span> Networking & Security
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-8 max-w-2xl mx-auto md:mx-0 text-center md:text-left">
+      <p class="text-lg text-muted-foreground leading-relaxed">
+        Hey, I’m <span class="text-foreground font-medium">Devin</span>. I’m a
+        <span class="text-foreground font-medium">Computer Science</span
+        > student based in <span class="text-foreground">Toronto, Canada</span>
+         who enjoys working close to the system and spends a lot of time building and 
+         experimenting with <span class="text-foreground font-medium">software</span>, <span class="text-foreground font-medium">networks</span>, and <span class="text-foreground font-medium">security</span>. 
+         When I’m not in class, I’m usually building something, breaking it, or trying to 
+         understand why computers behave the way they do.
+      </p>
+
+      <div
+        class="mt-8 flex flex-wrap items-center justify-center md:justify-start gap-4"
+      >
+        <Link
+          href="/resume.pdf"
+          class={buttonVariants({ variant: 'default' }) + ' shadow-lg gap-2'}
+        >
+          <Icon name="lucide:download" class="size-4" />
+          Resume
+        </Link>
+        <Link
+          href="/about"
+          class={buttonVariants({ variant: 'outline' }) +
+            ' bg-background/50 backdrop-blur-sm gap-2'}
+        >
+          Read more
+          <Icon name="lucide:arrow-right" class="size-4" />
+        </Link>
+      </div>
+
+      <div
+        class="mt-8 flex items-center justify-center md:justify-start gap-4 text-muted-foreground"
+      >
+        <Link href="mailto:contact@boodoo.dev" aria-label="Email">
+          <Icon
+            name="lucide:mail"
+            class="size-5 hover:text-foreground transition-colors"
+          />
+        </Link>
+        <Link href="https://github.com/DevinBoodoo" aria-label="GitHub">
+          <Icon
+            name="lucide:github"
+            class="size-5 hover:text-foreground transition-colors"
+          />
+        </Link>
+        <Link href="https://linkedin.com" aria-label="LinkedIn">
+          <Icon
+            name="lucide:linkedin"
+            class="size-5 hover:text-foreground transition-colors"
+          />
+        </Link>
+        <Link href="/rss.xml" aria-label="RSS">
+          <Icon
+            name="lucide:rss"
+            class="size-5 hover:text-foreground transition-colors"
+          />
+        </Link>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section class="mb-20">
+    <h2 class="text-4xl font-bold mb-2">
+      Experience<span class="text-primary">.</span>
+    </h2>
+    <p class="text-xl text-muted-foreground mb-8">
+      Where I've <span class="font-serif italic underline decoration-primary"
+        >Worked</span
+      >.
+    </p>
+
+    <div class="space-y-8 relative pl-6 sm:pl-0">
+      <div
+        class="absolute left-6 top-4 bottom-0 w-px bg-border hidden sm:block"
+      >
+      </div>
+
+      {
+        experience.map((job) => (
+          <div class="relative flex flex-col sm:flex-row gap-6 group">
+            <div class="hidden sm:flex shrink-0 items-start -ml-[26px]">
+              <div class="z-10 flex size-12 items-center justify-center rounded-full border bg-background shadow-sm group-hover:scale-110 transition-transform">
+                <Icon
+                  name={job.logo}
+                  class="size-6 text-muted-foreground group-hover:text-foreground"
+                />
+              </div>
+            </div>
+
+            <div class="flex-1 rounded-xl border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                <div>
+                  <h3 class="font-bold text-lg">{job.role}</h3>
+                  <p class="text-sm text-muted-foreground">{job.company}</p>
+                </div>
+                <div class="text-xs text-muted-foreground font-mono bg-muted/50 px-2 py-1 rounded-md w-fit">
+                  {job.startDate} &mdash; {job.endDate || 'Present'}
+                </div>
+              </div>
+
+              <p class="text-muted-foreground mb-4 text-sm leading-relaxed">
+                {job.description.map(desc => (
+                  <>
+                    • {desc}
+                    <br />
+                  </>
+                ))}
+              </p>
+
+              <div class="flex flex-wrap gap-2">
+                {job.tech.map((t) => (
+                  // @ts-ignore
+                  <Badge variant="secondary" className="text-xs font-normal">
+                    {t}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+
+  <section class="mb-20">
+    <h2 class="text-4xl font-bold mb-2">
+      Projects<span class="text-primary">.</span>
+    </h2>
+    <p class="text-xl text-muted-foreground mb-8">
+      Stuff I've <span class="font-serif italic underline decoration-primary"
+        >Built</span
+      >.
+    </p>
+
+    <div class="flex flex-col gap-6">
+      {
+        projects.map((project) => (
+          <ProjectCard project={project} />
+          // <div class="group flex flex-col sm:flex-row overflow-hidden rounded-xl border bg-card transition-all hover:shadow-lg hover:-translate-y-1">
+          //   <div class="w-full sm:w-64 shrink-0 overflow-hidden border-b sm:border-b-0 sm:border-r border-border">
+          //     {project.data.image ? (
+          //       <Image
+          //         src={project.data.image}
+          //         alt={project.data.name}
+          //         width={600}
+          //         height={400}
+          //         class="h-48 sm:h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          //       />
+          //     ) : (
+          //       <div class="h-48 sm:h-full w-full bg-muted flex items-center justify-center">
+          //         <Icon name="lucide:image" class="size-8 text-muted-foreground/50" />
+          //       </div>
+          //     )}
+          //   </div>
+            
+          //   <div class="flex flex-1 flex-col p-6">
+          //     <div class="flex-1">
+          //       <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+          //         {project.data.name}
+          //       </h3>
+          //       <p class="text-muted-foreground text-sm mb-4 line-clamp-2">
+          //         {project.data.description}
+          //       </p>
+                
+          //       <div class="flex flex-wrap gap-2 mb-6">
+          //         {project.data.tags?.slice(0, 4).map((tag: string) => (
+          //           <div class="flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-sm">
+          //             <Icon name="lucide:hash" class="size-3" />
+          //             {tag}
+          //           </div>
+          //         ))}
+          //       </div>
+          //     </div>
+
+          //     <div class="flex gap-3 pt-4 border-t border-border mt-auto">
+          //       {project.data.link && (
+          //           <Link
+          //           href={project.data.link}
+          //           external
+          //           class="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+          //           >
+          //           Visit Site
+          //           <Icon name="lucide:arrow-up-right" class="size-4" />
+          //           </Link>
+          //       )}
+          //       {/* Simulated Source Code Link since it's not in the frontmatter yet */}
+          //       <Link
+          //         href="#"
+          //         class="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-3 rounded-md border border-input bg-background hover:bg-muted hover:text-accent-foreground transition-colors"
+          //       >
+          //         <Icon name="lucide:code-2" class="size-4" />
+          //         Code
+          //       </Link>
+          //     </div>
+          //   </div>
+          // </div>
+        ))
+      }
+    </div>
+    
+    <div class="mt-8 flex justify-center">
+        <Link href="/projects" class={buttonVariants({ variant: 'ghost' }) + " group"}>
+            See all projects <span class="ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </Link>
+    </div>
+  </section>
+
+  <!-- Posts Section -->
+  <section class="mb-12">
+    <h2 class="text-4xl font-bold mb-2">
+      Posts<span class="text-primary">.</span>
+    </h2>
+    <p class="text-xl text-muted-foreground mb-8">
+      Stuff I've <span class="font-serif italic underline decoration-primary"
+        >Blogged</span
+      > about.
+    </p>
+
+    <div class="flex flex-col gap-4">
+      {
+        blog.map((post) => (
+          <BlogCard entry={post} />
+        ))
+      }
+    </div>
+    
+     <div class="mt-8 flex justify-center">
+        <Link href="/blog" class={buttonVariants({ variant: 'ghost' }) + " group"}>
+            See all posts <span class="ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </Link>
+    </div>
+  </section>
+</Layout>
