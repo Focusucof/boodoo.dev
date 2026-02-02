@@ -1,5 +1,6 @@
 ---
 import { SITE } from '@/consts'
+import { ClientRouter } from 'astro:transitions'
 
 interface Props {
   title?: string
@@ -16,6 +17,7 @@ const image = new URL('', Astro.site)
 ---
 
 <title>{`${title} | ${SITE.title}`}</title>
+<ClientRouter />
 <meta name="description" content={description} />
 <link rel="canonical" href={SITE.href} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
