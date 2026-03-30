@@ -87,19 +87,19 @@ const tocSections = await getTOCSections(currentPostId)
           ...(isCurrentSubpost && parentPost
             ? [
                 {
-                  href: `/blog/${parentPost.id}`,
+                  href: `/blog/${parentPost.id}/`,
                   label: parentPost.data.title,
                   icon: 'lucide:book-open',
                 },
                 {
-                  href: `/blog/${currentPostId}`,
+                  href: `/blog/${currentPostId}/`,
                   label: post.data.title,
                   icon: 'lucide:file-text',
                 },
               ]
             : [
                 {
-                  href: `/blog/${currentPostId}`,
+                  href: `/blog/${currentPostId}/`,
                   label: post.data.title,
                   icon: 'lucide:book-open-text',
                 },
@@ -137,16 +137,25 @@ const tocSections = await getTOCSections(currentPostId)
               <div class="flex w-full items-center justify-center gap-x-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
                 {authors.map((author) => (
                   <div class="flex items-center gap-x-1.5">
-                    <Image
-                      src={author.avatar}
-                      alt={author.name}
-                      width={20}
-                      height={20}
-                      class="rounded-full"
-                    />
+                    {author.avatar ? (
+                      <Image
+                        src={author.avatar}
+                        alt={author.name}
+                        width={20}
+                        height={20}
+                        class="rounded-full"
+                      />
+                    ) : (
+                      <span
+                        class="bg-muted text-muted-foreground flex size-5 items-center justify-center rounded-full text-[10px] font-medium uppercase"
+                        aria-hidden="true"
+                      >
+                        {author.name.charAt(0)}
+                      </span>
+                    )}
                     {author.isRegistered ? (
                       <Link
-                        href={`/authors/${author.id}`}
+                        href={`/authors/${author.id}/`}
                         underline
                         class="text-foreground"
                       >
@@ -199,7 +208,7 @@ const tocSections = await getTOCSections(currentPostId)
               post.data.tags.length > 0 &&
               post.data.tags.map((tag) => (
                 <a
-                  href={`/tags/${tag}`}
+                  href={`/tags/${tag}/`}
                   class={badgeVariants({ variant: 'muted' })}
                 >
                   <Icon name="lucide:hash" class="size-3" />

@@ -218,7 +218,7 @@ export async function parseAuthors(authorIds: string[] = []) {
     return {
       id,
       name: author?.data?.name || id,
-      avatar: author?.data?.avatar || '',
+      avatar: author?.data?.avatar,
       isRegistered: !!author,
     }
   })
