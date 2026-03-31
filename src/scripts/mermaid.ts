@@ -55,7 +55,7 @@ async function renderMermaid() {
   for (const el of elements) {
     const encoded = el.getAttribute('data-graph')
     if (encoded) {
-      el.textContent = atob(encoded)
+      el.textContent = decodeURIComponent(atob(encoded))
       el.removeAttribute('data-graph')
     }
   }
