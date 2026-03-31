@@ -154,64 +154,6 @@
     :where(.katex-display):not(:where(.not-prose, .not-prose *)) {
       @apply text-foreground/80 my-6 overflow-x-auto overflow-y-hidden py-2 tracking-normal;
     }
-
-    :where(pre.mermaid):not(:where(.not-prose, .not-prose *)) {
-      @apply mx-auto my-6 overflow-visible;
-      @apply bg-transparent border-none;
-      padding: 2rem !important;
-      min-height: fit-content;
-      width: fit-content;
-    }
-
-    :where(.mermaid svg):not(:where(.not-prose, .not-prose *)) {
-      height: auto !important;
-      width: auto !important;
-      display: flex !important;
-    }
-
-    :where(.mermaid):not(:where(.not-prose, .not-prose *)) {
-      font-family: 'JetBrains Mono', monospace !important;
-    }
-
-    :where(.mermaid .nodeLabel, .mermaid .edgeLabel, .mermaid .labelText, .mermaid text):not(:where(.not-prose, .not-prose *)) {
-      font-family: 'JetBrains Mono', monospace !important;
-      fill: var(--foreground) !important;
-    }
-
-    :where(.mermaid .edgeLabel, .mermaid .edgeLabel span, .mermaid .edgeLabel p, .mermaid .edgeLabel div):not(:where(.not-prose, .not-prose *)) {
-      color: var(--foreground) !important;
-      background-color: var(--background) !important;
-      font-family: 'JetBrains Mono', monospace !important;
-    }
-
-    :where(.mermaid .node rect, .mermaid .node circle, .mermaid .node ellipse, .mermaid .node polygon):not(:where(.not-prose, .not-prose *)) {
-      fill: var(--muted) !important;
-      stroke: var(--border) !important;
-    }
-
-    :where(.mermaid .edgePath .path):not(:where(.not-prose, .not-prose *)) {
-      stroke: var(--muted-foreground) !important;
-    }
-
-    :where(.mermaid .arrowheadPath):not(:where(.not-prose, .not-prose *)) {
-      fill: var(--muted-foreground) !important;
-    }
-
-    :where(.mermaid .cluster rect):not(:where(.not-prose, .not-prose *)) {
-      fill: var(--muted) !important;
-      stroke: var(--border) !important;
-      stroke-width: 2px !important;
-    }
-
-    :where(.mermaid .cluster-label, .mermaid .cluster-label span, .mermaid .cluster-label div):not(:where(.not-prose, .not-prose *)) {
-      fill: var(--foreground) !important;
-      color: var(--foreground) !important;
-      font-family: 'JetBrains Mono', monospace !important;
-    }
-
-    :where(.mermaid .cluster .nodeLabel):not(:where(.not-prose, .not-prose *)) {
-      color: var(--foreground) !important;
-    }
   }
 }
 

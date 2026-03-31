@@ -12,7 +12,6 @@ import rehypeKatex from 'rehype-katex'
 import rehypeShiki from '@shikijs/rehype'
 import remarkEmoji from 'remark-emoji'
 import remarkMath from 'remark-math'
-import { remarkMermaid } from './src/lib/remark-mermaid'
 
 import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
@@ -58,7 +57,7 @@ export default defineConfig({
             wrap: true,
             collapseStyle: 'collapsible-auto',
             overridesByLang: {
-              'ansi,bat,bash,batch,cmd,console,powershell,ps,ps1,psd1,psm1,sh,shell,shellscript,shellsession,text,zsh,mermaid':
+              'ansi,bat,bash,batch,cmd,console,powershell,ps,ps1,psd1,psm1,sh,shell,shellscript,shellsession,text,zsh':
                 {
                   showLineNumbers: false,
                 },
@@ -104,6 +103,6 @@ export default defineConfig({
         },
       ],
     ],
-    remarkPlugins: [remarkMath, remarkEmoji, remarkMermaid],
+    remarkPlugins: [remarkMath, remarkEmoji],
   },
 })
