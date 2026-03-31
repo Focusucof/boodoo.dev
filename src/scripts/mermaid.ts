@@ -51,9 +51,17 @@ function initializeMermaid() {
 }
 
 async function renderMermaid() {
-  await mermaid.run({
-    querySelector: '.mermaid',
-  })
+  const elements = document.querySelectorAll<HTMLPreElement>('pre.mermaid[data-graph]')
+  for (const el of elements) {
+    const encoded = el.getAttribute('data-graph')
+    if (encoded) {
+      el.textContent = atob(encoded)
+      el.removeAttribute('data-graph')
+    }
+  }
+  if (document.querySelector('.mermaid')) {
+    await mermaid.run({ querySelector: '.mermaid' })
+  }
 }
 
 // Initialize and render
