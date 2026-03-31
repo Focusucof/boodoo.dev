@@ -5,9 +5,9 @@ export function remarkMermaid() {
   return (tree: Root) => {
     visit(tree, 'code', (node: Code) => {
       if (node.lang === 'mermaid') {
-        const encoded = Buffer.from(encodeURIComponent(node.value)).toString('base64')
+        // Convert code block to HTML with mermaid class
         node.type = 'html' as any
-        ;(node as any).value = `<pre class="mermaid" data-graph="${encoded}"></pre>`
+        ;(node as any).value = `<pre class="mermaid">${node.value}</pre>`
       }
     })
   }

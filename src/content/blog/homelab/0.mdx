@@ -130,37 +130,4 @@ Segmenting the network provides a few practical benefits:
 
 ## Network Diagram
 
-```mermaid
-flowchart TB
-  INTERNET["Internet<br/><small>Rogers ISP</small>"]
-  MODEM["ISP modem<br/><small>Bridge mode</small>"]
-  ROUTER["UniFi Express 7<br/><small>Router · Firewall · WiFi AP</small>"]
-
-  subgraph WIRED["Wired path"]
-    SWITCH["TP-Link SG108<br/><small>Gigabit switch — tagged trunk</small>"]
-    PROXMOX["Proxmox host<br/><small>Linux bridge vmbr0</small>"]
-  end
-
-  WIFI["Wireless clients<br/><small>Laptops · phones · IoT</small>"]
-
-  subgraph VLAN10["VLAN 10 · Management · 192.168.10.0/24"]
-    MGMT["Admin interfaces<br/><small>Proxmox Web UI · SSH</small>"]
-  end
-
-  subgraph VLAN20["VLAN 20 · Servers · 192.168.20.0/24"]
-    SRV["VMs / LXC containers<br/><small>Services · web · databases</small>"]
-  end
-
-  INTERNET --> MODEM
-  MODEM --> ROUTER
-  ROUTER -- "tagged trunk" --> SWITCH
-  ROUTER -. "WiFi" .-> WIFI
-  SWITCH --> PROXMOX
-  PROXMOX -- "VLAN 10" --> MGMT
-  PROXMOX -- "VLAN 20" --> SRV
-
-  WIFI -- "allow" --> SRV
-  MGMT -- "allow" --> SRV
-  SRV -. "block" .-> MGMT
-  SRV -. "block" .-> WIFI
-```
+![Network Diagram](./network_diagram.png)
