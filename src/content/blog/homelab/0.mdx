@@ -1,9 +1,8 @@
 ---
 title: 'Networking'
-description: 'A quick update introduces our first content-based component: the callout!'
-date: 2025-04-24
-tags: ['v1.5.0']
-image: './banner.png'
+description: 'A detailed overview of the networking setup in my homelab, including VLAN segmentation, routing rules, and device configuration.'
+date: 2026-03-30
+tags: ['v1.0.0', 'homelab', 'networking']
 authors: ['devin_boodoo']
 ---
 
@@ -129,38 +128,39 @@ Segmenting the network provides a few practical benefits:
 
 ---
 
-## Overall Network Diagram
+## Network Diagram
 
 ```mermaid
-flowchart TD
+flowchart TB
+  INTERNET["Internet<br/><small>Rogers ISP</small>"]
+  MODEM["ISP modem<br/><small>Bridge mode</small>"]
+  ROUTER["UniFi Express 7<br/><small>Router · Firewall · WiFi AP</small>"]
 
-A["VLAN 10<br>Admin / Management<br>192.168.10.0/24"]
-B["VLAN 20<br>Servers / VMs<br>192.168.20.0/24"]
-C["VLAN 1<br>Default / Users<br>192.168.1.0/24"]
+  subgraph WIRED["Wired path"]
+    SWITCH["TP-Link SG108<br/><small>Gigabit switch — tagged trunk</small>"]
+    PROXMOX["Proxmox host<br/><small>Linux bridge vmbr0</small>"]
+  end
 
-A -- "Allow" --> B
-C -- "Allow" --> B
+  WIFI["Wireless clients<br/><small>Laptops · phones · IoT</small>"]
 
-B -- "Block" --> A
-B -- "Block" --> C
+  subgraph VLAN10["VLAN 10 · Management · 192.168.10.0/24"]
+    MGMT["Admin interfaces<br/><small>Proxmox Web UI · SSH</small>"]
+  end
 
-B -- "Allow (NFS only)" --> A
+  subgraph VLAN20["VLAN 20 · Servers · 192.168.20.0/24"]
+    SRV["VMs / LXC containers<br/><small>Services · web · databases</small>"]
+  end
 
-style A fill:#1e3a8a,color:#fff
-style B fill:#065f46,color:#fff
-style C fill:#374151,color:#fff
+  INTERNET --> MODEM
+  MODEM --> ROUTER
+  ROUTER -- "tagged trunk" --> SWITCH
+  ROUTER -. "WiFi" .-> WIFI
+  SWITCH --> PROXMOX
+  PROXMOX -- "VLAN 10" --> MGMT
+  PROXMOX -- "VLAN 20" --> SRV
+
+  WIFI -- "allow" --> SRV
+  MGMT -- "allow" --> SRV
+  SRV -. "block" .-> MGMT
+  SRV -. "block" .-> WIFI
 ```
-
-
-
-```text
-Internet
-   │
-[Rogers Modem]
-   │ (Bridge Mode)
-   │
-[UniFi Express 7 Router]
-   │
-[TP-Link SG108 Switch]
-   │
-Servers / Workstations / Homelab Nodes

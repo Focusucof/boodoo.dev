@@ -83,7 +83,7 @@ const tocSections = await getTOCSections(currentPostId)
     <div class="col-start-2">
       <Breadcrumbs
         items={[
-          { href: '/blog', label: 'Blog', icon: 'lucide:library-big' },
+          { href: '/blog/', label: 'Blog', icon: 'lucide:library-big' },
           ...(isCurrentSubpost && parentPost
             ? [
                 {
@@ -302,4 +302,8 @@ const tocSections = await getTOCSections(currentPostId)
       document.head.appendChild(link)
     }
   }
+</script>
+
+<script>
+  import '@/scripts/mermaid'
 </script>
