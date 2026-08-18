@@ -1,0 +1,107 @@
+---
+title: 'Virtualization'
+description: 'A detailed overview of the virtualization layer in my homelab, including the Proxmox host, resource allocation, and the VMs and containers running on top of it.'
+date: 2026-04-13
+tags: ['v1.0.0', 'homelab', 'virtualization']
+authors: ['devin_boodoo']
+---
+
+import Callout from '@/components/Callout.astro'
+import { Icon } from 'astro-icon/components'
+
+## Overview
+
+Once the network was in place, the next layer to build out was virtualization. Everything in the lab that isn't a physical network device lives on a single **Proxmox VE** host, split across virtual machines and LXC containers depending on the workload.
+
+The goal here was similar to the networking layer: keep things isolated, keep resource usage predictable, have low coupling between services, and make it easy to spin up or tear down services without touching anything else running on the box.
+
+---
+
+## The Host
+
+The virtualization host is a single machine running **Proxmox VE**, specced as follows:
+
+- **CPU:** 20 cores
+- **RAM:** 64GB
+- **GPU:** RTX 5070 (passed through to a Windows VM)
+
+<Callout title="Why one host instead of a cluster?" variant="tip">
+A single node keeps things simple and cheap while I'm still actively reshaping what runs where. Proxmox clustering and HA are appealing, but for a homelab that's still evolving month to month, the operational overhead isn't worth it yet.
+</Callout>
+
+Storage, networking, and compute all live on this one box, with the UX7 handling VLAN trunking down to it as described in the [Networking](/blog/homelab/0/) post.
+
+---
+
+## GPU Passthrough
+
+The RTX 5070 is passed through directly to a Windows gaming VM using IOMMU groups and vfio-pci. This lets the VM use the GPU almost as if it were bare metal, at the cost of the GPU being unavailable to the host or other guests while that VM is running.
+
+Getting passthrough working reliably involved:
+
+- enabling IOMMU in the BIOS and kernel boot parameters
+- isolating the GPU into its own IOMMU group
+- binding the GPU to vfio-pci early in boot so Proxmox doesn't grab it first
+- passing the PCI device through in the VM config
+
+This VM is used primarily for gaming or small local LLM models, kept fully separate from the server workloads running elsewhere on the host.
+
+---
+
+## VMs and Containers
+
+Workloads are split between full VMs and LXC containers depending on how much isolation each one actually needs. LXC is used where possible since it's lighter weight, and VMs are reserved for things that need a full kernel, a different OS, or hardware passthrough.
+
+### Infrastructure Services
+
+- **GitLab** — self-hosted git, CI/CD, and issue tracking for personal projects.
+- **Mailcow** — full mail server stack, relayed out through a Hetzner VPS to work around Rogers blocking outbound port 25
+- **n8n** — workflow automation across the homelab and various projects
+- **Twenty CRM** — self-hosted CRM
+- **cal.com** — scheduling
+- **NGINX** — reverse proxy and TLS termination for all services exposed to the internet
+
+### Media Stack
+
+- **Jellyfin** — media server
+- **Sonarr / Radarr / Prowlarr** — the arr stack for library management and indexing
+- **Jellyseerr** — request management
+
+### Personal Infrastructure
+
+- **Immich** — self-hosted photo and video backup
+- **Samba** — file sharing and network drive access
+- **SFTPGo** — file transfer server
+
+<Callout title="Isolation between workloads" variant="note">
+Each of these runs on its own VM or container rather than being bundled together. If one service needs to be rebuilt, updated, or breaks entirely, it doesn't take anything else down with it and it maps cleanly onto the VLAN 20 (Server/VM Network) segmentation from the networking layer.
+</Callout>
+
+---
+
+## Networking Integration
+
+Every VM and container on the host is tagged onto **VLAN 20** (`192.168.20.0/24`), the Server/VM Network described in the previous post. Proxmox's management interface itself sits on **VLAN 10**, reachable only from trusted management devices.
+
+This means:
+
+- a compromised service VM has no direct path to the Proxmox host or management interfaces
+- all inter-service traffic is still subject to firewall rules on the UX7
+- adding a new VM or container is just a matter of tagging the right VLAN on its virtual NIC
+
+---
+
+## Why This Layout
+
+Splitting workloads this way gives a few practical benefits:
+
+- services can be resource-limited independently (CPU/RAM caps per VM or container)
+- a bad update to one service doesn't leak into others
+- backups and snapshots can be taken per-service rather than all-or-nothing
+- new experiments can be spun up in a throwaway container without risking anything else
+
+---
+
+## What's Next
+
+The current setup covers infrastructure, media, and personal services, but there's still room to grow, namely around backup strategy and eventually clustering once the lab's workload stabilizes.
