@@ -1,0 +1,89 @@
+---
+title: 'Reverse Proxy & Edge Networking'
+description: 'How traffic gets from the internet to the right service, using an edge NGINX container in front of a production VM that runs its own internal NGINX.'
+date: 2026-09-24
+tags: ['v1.0.0', 'homelab', 'networking', 'nginx']
+authors: ['devin_boodoo']
+---
+
+import Callout from '@/components/Callout.astro'
+import { Icon } from 'astro-icon/components'
+
+## Overview
+
+With [networking](/blog/homelab/0/) and [virtualization](/blog/homelab/1/) in place, the next part was getting traffic hosting my websites.
+
+The setup is split into two layers:
+
+- **hosting VMs** that runs their own internal NGINX, serving the actual sites and services.
+- an **edge NGINX container** that sits in front of it, terminates the traffic coming in from the internet, and proxies it back to the proper VM
+
+Only the edge container is ever reachable from the outside. The prod VM and everything running on it stay fully internal.
+
+---
+
+## The Hosting VMs
+
+The hosting VMs are where the actual websites and deployed services live. Each one runs its own NGINX instance, which handles routing between the different sites and apps hosted on that VM based on hostname.
+
+These VMs sit on **VLAN 20** (the Server/VM Network) alongside the rest of the service VMs and containers, so it's reachable internally but has no path in from the internet on its own.
+
+Keeping NGINX on each VM itself, rather than routing directly to each app, means:
+
+- each site/app is just another `server` block on the VM, not a separate thing to expose
+- TLS and routing logic for what's running on that VM stays local to that VM
+- the VM can be rebuilt, resized, or migrated without changing anything about how it's reached from outside
+
+---
+
+## The Edge Container
+
+In front of the hosting VMs, sits a separate LXC container running its own NGINX — the **edge NGINX**. This is the only piece in the whole chain that's actually exposed to the internet.
+
+The edge container's job is narrow on purpose:
+
+- accept incoming connections from the internet
+- proxy them to the proper VM/container based on hostname
+- (optionally) terminate TLS at the edge, or pass it through, depending on the site
+
+Because the edge container does nothing except proxy, it has a small blast radius. If it gets compromised, it has no accounts, no app data, and no direct access to anything except being able to reach the hosting VMs over the internal network.
+
+<Callout title="Why two NGINX layers instead of one?" variant="tip">
+Splitting the edge proxy from the hosting VM's internal NGINX allows for a cleaner separation of concerns. The hosting VM's NGINX config can stay focused on routing between the actual sites it hosts with specific per site logic, while the edge container just routes traffic to the right place. This also makes it easier to add more hosting VMs in the future, since the edge container can just be updated with new proxy rules without touching the router or the hosting VM.
+</Callout>
+
+---
+
+## Port Forwarding
+
+The UX7 router is configured to forward ports 80/443 from the WAN interface directly to the edge container's internal IP on VLAN 20.
+
+This means the request path for a typical HTTPS request looks like:
+
+```
+Internet → UX7 (port forward 443) → Edge NGINX container → Hosting VM NGINX → app
+```
+
+At each hop, the receiving side only knows about the next hop, not the whole chain. The UX7 doesn't care what's behind the edge container, and the edge container doesn't care what's behind the hosting VM's NGINX beyond where to route a given hostname.
+
+---
+
+## Why Split It This Way
+
+A few practical reasons drove this instead of just forwarding straight to the prod VM's NGINX:
+
+- **smaller attack surface** — the only internet-facing component is a minimal proxy container, not the VM actually running the apps
+- **decoupled from the router** — port forwarding rules only ever need to point at one stable IP (the edge container), even as sites/apps come and go
+- **cheap to rebuild** — the edge container holds no state and almost no config, so it can be torn down and recreated in minutes if something goes wrong
+- **easier to manage** — the edge container's NGINX config is just a list of proxy rules, so adding/removing sites is just a matter of editing a single file and reloading NGINX
+- **room to grow** — if I eventually add a second prod VM or split workloads further, the edge container just gets another set of proxy rules, no router changes needed
+
+<Callout title="Single point of entry" variant="note">
+Everything internet-facing funnels through one container on VLAN 20. Firewall rules on the UX7 only need to allow that one host in from WAN, which keeps the rest of the segmentation from the [networking](/blog/homelab/0/) layer intact.
+</Callout>
+
+---
+
+## What's Next
+
+This covers how traffic gets in from the internet to the right service. Next up is filling in what's still missing around this layer: automated TLS renewal, and eventually access logging/monitoring on the edge container itself.
